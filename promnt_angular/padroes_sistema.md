@@ -35,6 +35,13 @@ cria a implementação  seguindo estas diretrizes rigorosas:
 - Bundle optimization
 
 Template base para novos componentes:
+```
+cria uma pasta: "component-name"
+dentro da pasta cria os componentes:
+- component-name.component.ts
+- component-name.component.html
+```
+
 
 ```
 // component-name.component.ts

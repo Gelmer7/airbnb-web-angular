@@ -1,0 +1,18 @@
+<app-app-toolbar></app-app-toolbar>
+
+<div
+  class="grid gap-4 p-4"
+  [ngClass]="collapsed() ? 'grid-cols-[3.5rem,1fr]' : 'grid-cols-[16rem,1fr]'"
+  role="main"
+  aria-label="Dashboard"
+>
+  <app-sidebar-menu
+    [items]="navItems"
+    [collapsed]="collapsed()"
+    (toggleSidebar)="toggleSidebar()"
+  ></app-sidebar-menu>
+
+  <section class="content-shell">
+    <router-outlet></router-outlet>
+  </section>
+</div>
