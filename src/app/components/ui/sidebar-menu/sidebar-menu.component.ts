@@ -25,7 +25,6 @@ type ExtendedMenuItem = MenuItem & { badge?: string | number; shortcut?: string 
 export class SidebarMenuComponent {
   @Input({ required: true }) items: { id: string; label: string; icon: string; route: string; badge?: string | number; shortcut?: string }[] = [];
   @Input({ required: true }) collapsed = false;
-
   @Output() toggleSidebar = new EventEmitter<void>();
 
   protected onToggle(): void {

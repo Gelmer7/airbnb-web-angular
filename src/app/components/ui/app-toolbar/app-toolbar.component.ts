@@ -15,12 +15,5 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './app-toolbar.component.html'
 })
 export class AppToolbarComponent {
-  /** Estado atual da sidebar (colapsada). */
-  @Input({ required: true }) collapsed = false;
-  /** Evento disparado para alternar colapso da sidebar. */
-  @Output() toggleSidebar = new EventEmitter<void>();
-
-  protected onToggle(): void {
-    this.toggleSidebar.emit();
-  }
+  // ... existing code ...
 }

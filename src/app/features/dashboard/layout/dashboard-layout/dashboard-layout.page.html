@@ -1,18 +1,26 @@
-<app-app-toolbar></app-app-toolbar>
+<div class="flex flex-col h-screen bg-surface-50" aria-label="Shell do dashboard">
+  <header>
+    <app-app-toolbar></app-app-toolbar>
+  </header>
 
-<div
-  class="grid gap-4 p-4"
-  [ngClass]="collapsed() ? 'grid-cols-[3.5rem,1fr]' : 'grid-cols-[16rem,1fr]'"
-  role="main"
-  aria-label="Dashboard"
->
-  <app-sidebar-menu
-    [items]="navItems"
-    [collapsed]="collapsed()"
-    (toggleSidebar)="toggleSidebar()"
-  ></app-sidebar-menu>
+  <main
+    class="flex-grow grid gap-2 p-2"
+    [ngClass]="collapsed() ? 'grid-cols-[auto,1fr]' : 'grid-cols-[15rem,1fr]'"
+    role="main"
+    aria-label="Área principal"
+  >
+    <app-sidebar-menu
+      [items]="navItems"
+      [collapsed]="collapsed()"
+      (toggleSidebar)="toggleSidebar()"
+    ></app-sidebar-menu>
 
-  <section class="content-shell">
-    <router-outlet></router-outlet>
-  </section>
+    <section class="content-shell h-full rounded-md border bg-surface-100" aria-label="Conteúdo">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+
+  <footer class="p-2">
+    <app-status-bar></app-status-bar>
+  </footer>
 </div>

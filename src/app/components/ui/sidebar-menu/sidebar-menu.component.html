@@ -1,25 +1,24 @@
-<aside class="sidebar-shell" aria-label="Menu lateral">
+<aside class="sidebar-shell h-full" aria-label="Menu lateral">
   <p-menu
     [model]="menuModel"
-    class="flex justify-center"
-    [styleClass]="collapsed ? 'w-[3.5rem]' : 'w-60'"
+    [styleClass]="(collapsed ? 'w-[3.5rem]' : 'w-60') + ' h-full rounded-md border bg-surface-100'"
   >
     <ng-template #start>
-      <span class="flex items-center justify-between w-full px-2 py-2" aria-label="Cabeçalho do menu">
-        <span aria-hidden="true">Menu</span>
+      <div class="flex items-center justify-between w-full p-2" aria-label="Cabeçalho do menu">
+        <span *ngIf="!collapsed" class="font-semibold">Menu</span>
         <button
           pButton
           [icon]="collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-left'"
           type="button"
           aria-label="Alternar menu lateral"
           (click)="onToggle()"
-          class="p-button-text"
+          class="p-button-text p-button-sm"
         ></button>
-      </span>
+      </div>
     </ng-template>
 
     <ng-template #submenuheader let-item>
-      <span>{{ item.label }}</span>
+      <span *ngIf="!collapsed">{{ item.label }}</span>
     </ng-template>
 
     <ng-template #item let-item>
@@ -35,15 +34,16 @@
 
     <ng-template #end>
       <button
+        *ngIf="!collapsed"
         pRipple
         class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200"
         type="button"
         aria-label="Perfil"
       >
         <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
-        <span class="inline-flex flex-col">
-          <span>Amy Elsner</span>
-          <span>Admin</span>
+        <span class="inline-flex flex-col items-start">
+          <span class="font-semibold">Amy Elsner</span>
+          <span class="text-sm text-muted-color">Admin</span>
         </span>
       </button>
     </ng-template>

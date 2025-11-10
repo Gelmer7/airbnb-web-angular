@@ -5,19 +5,32 @@ import { AppToolbarComponent } from '../../../../components/ui/app-toolbar/app-t
 import { SidebarMenuComponent } from '../../../../components/ui/sidebar-menu/sidebar-menu.component';
 import { NavItem } from '../../../../components/ui/types';
 import { PanelModule } from 'primeng/panel';
+import { StatusBarComponent } from '../../../../components/ui/status-bar/status-bar.component';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterModule, AppToolbarComponent, SidebarMenuComponent, PanelModule ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    AppToolbarComponent,
+    SidebarMenuComponent,
+    PanelModule,
+    StatusBarComponent,
+  ],
   templateUrl: './dashboard-layout.page.html',
 })
 export class DashboardLayoutPage {
   protected readonly collapsed = signal(false);
 
   protected readonly navItems: NavItem[] = [
-    { id: 'upload', label: 'Upload de CSV', icon: 'pi-file', route: '/dashboard/csv-reports/upload' },
+    {
+      id: 'upload',
+      label: 'Upload de CSV',
+      icon: 'pi-file',
+      route: '/dashboard/csv-reports/upload',
+    },
     { id: 'entries', label: 'Entradas', icon: 'pi-download', route: '/dashboard/airbnb-payments' },
     { id: 'csv-list', label: "Lista de CSV's", icon: 'pi-list', route: '/dashboard/csv-reports' },
     { id: 'expenses', label: 'Gastos', icon: 'pi-arrow-up', route: '/dashboard/expenses' },
@@ -31,6 +44,6 @@ export class DashboardLayoutPage {
   ];
 
   protected toggleSidebar(): void {
-    this.collapsed.update(v => !v);
+    this.collapsed.update((v) => !v);
   }
 }
