@@ -7,23 +7,34 @@ import { BadgeModule } from 'primeng/badge';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem } from 'primeng/api';
 
-type ExtendedMenuItem = MenuItem & { badge?: string | number; shortcut?: string };
-
-/**
- * Menu lateral (apresentação)
- * Renderiza itens de navegação com ícones. Oculta rótulos quando colapsado.
- */
 @Component({
   selector: 'app-sidebar-menu',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterModule, MenuModule, BadgeModule, RippleModule, AvatarModule, ButtonModule],
-  templateUrl: './sidebar-menu.component.html'
+  imports: [
+    CommonModule,
+    RouterModule,
+    MenuModule,
+    BadgeModule,
+    RippleModule,
+    AvatarModule,
+    ButtonModule,
+    TooltipModule,
+  ],
+  templateUrl: './sidebar-menu.component.html',
 })
 export class SidebarMenuComponent {
-  @Input({ required: true }) items: { id: string; label: string; icon: string; route: string; badge?: string | number; shortcut?: string }[] = [];
+  @Input({ required: true }) items: {
+    id: string;
+    label: string;
+    icon: string;
+    route: string;
+    badge?: string | number;
+    shortcut?: string;
+  }[] = [];
   @Input({ required: true }) collapsed = false;
   @Output() toggleSidebar = new EventEmitter<void>();
 
@@ -31,6 +42,7 @@ export class SidebarMenuComponent {
     this.toggleSidebar.emit();
   }
 
+  protected trackById = (_: number, item: NavItem) => item.id;
   protected get menuModel(): (MenuItem & { badge?: string | number; shortcut?: string })[] {
     return this.items.map((i) => ({
       label: i.label,
@@ -40,6 +52,4 @@ export class SidebarMenuComponent {
       shortcut: i.shortcut,
     }));
   }
-
-  protected trackById = (_: number, item: NavItem) => item.id;
 }

@@ -1,51 +1,73 @@
-<aside class="sidebar-shell h-full" aria-label="Menu lateral">
-  <p-menu
-    [model]="menuModel"
-    [styleClass]="(collapsed ? 'w-[3.5rem]' : 'w-60') + ' h-full rounded-md border bg-surface-100'"
-  >
+<!-- Template do SidebarMenuComponent -->
+<aside
+  class="h-full"
+  [ngClass]="{ 'w-[3.5rem] overflow-hidden': collapsed, 'w-[15rem]': !collapsed }"
+  aria-label="Menu lateral"
+>
+  <p-menu [model]="menuModel" [styleClass]="'h-full rounded-md '" [style]="{ width: '100%' }">
+    <!-- Cabeçalho menu -->
     <ng-template #start>
       <div class="flex items-center justify-between w-full p-2" aria-label="Cabeçalho do menu">
-        <span *ngIf="!collapsed" class="font-semibold">Menu</span>
-        <button
-          pButton
+        <span *ngIf="!collapsed">Menu</span>
+        <p-button
           [icon]="collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-left'"
-          type="button"
+          variant="text"
           aria-label="Alternar menu lateral"
           (click)="onToggle()"
-          class="p-button-text p-button-sm"
-        ></button>
+        ></p-button>
       </div>
     </ng-template>
 
     <ng-template #submenuheader let-item>
-      <span *ngIf="!collapsed">{{ item.label }}</span>
+      @if (!collapsed) {
+      <span>{{ item.label }}</span>
+      }
     </ng-template>
 
+    <!-- Menu itens -->
     <ng-template #item let-item>
-      <a pRipple [routerLink]="item.routerLink" class="flex items-center p-menu-item-link">
+      <a
+        pRipple
+        [routerLink]="item.routerLink"
+        class="flex items-center p-menu-item-link"
+        [ngClass]="collapsed ? 'justify-center px-2' : 'px-2'"
+        [pTooltip]="item.label"
+        [tooltipDisabled]="!collapsed"
+        tooltipPosition="top"
+        [attr.aria-label]="collapsed ? item.label : null"
+      >
         <span [class]="item.icon" aria-hidden="true"></span>
         <span class="ml-2" *ngIf="!collapsed">{{ item.label }}</span>
-        <p-badge *ngIf="item.badge && !collapsed" class="ml-auto" [value]="item.badge" />
-        <span *ngIf="item.shortcut && !collapsed" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">
+        @if (item.badge && !collapsed) {
+        <p-badge class="ml-auto" [value]="item.badge" />
+        } @if (item.shortcut && !collapsed) {
+        <span>
           {{ item.shortcut }}
         </span>
+        }
       </a>
     </ng-template>
 
+    <!-- avatar com foto do usuário -->
     <ng-template #end>
-      <button
-        *ngIf="!collapsed"
+      @if (!collapsed) {
+      <p-button
+        variant="text"
         pRipple
-        class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200"
-        type="button"
+        class="relative overflow-hidden w-full flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200"
         aria-label="Perfil"
       >
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2" shape="circle" />
+        <p-avatar
+          image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+          class="mr-2"
+          shape="circle"
+        />
         <span class="inline-flex flex-col items-start">
-          <span class="font-semibold">Amy Elsner</span>
+          <span>Amy Elsner</span>
           <span class="text-sm text-muted-color">Admin</span>
         </span>
-      </button>
+      </p-button>
+      }
     </ng-template>
   </p-menu>
 </aside>

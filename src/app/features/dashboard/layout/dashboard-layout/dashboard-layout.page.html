@@ -1,26 +1,24 @@
-<div class="flex flex-col h-screen bg-surface-50" aria-label="Shell do dashboard">
+<div class="flex flex-col h-screen" aria-label="Shell do dashboard">
   <header>
     <app-app-toolbar></app-app-toolbar>
   </header>
 
-  <main
-    class="flex-grow grid gap-2 p-2"
-    [ngClass]="collapsed() ? 'grid-cols-[auto,1fr]' : 'grid-cols-[15rem,1fr]'"
-    role="main"
-    aria-label="Área principal"
-  >
+  <div class="flex flex-1 overflow-hidden p-2">
     <app-sidebar-menu
+      class="h-full"
       [items]="navItems"
       [collapsed]="collapsed()"
       (toggleSidebar)="toggleSidebar()"
     ></app-sidebar-menu>
 
-    <section class="content-shell h-full rounded-md border bg-surface-100" aria-label="Conteúdo">
-      <router-outlet></router-outlet>
-    </section>
-  </main>
+    <main class="flex-1 flex flex-col pl-2" role="main" aria-label="Área principal">
+      <section class="h-full rounded-md border" aria-label="Conteúdo">
+        <router-outlet></router-outlet>
+      </section>
+    </main>
+  </div>
 
-  <footer class="p-2">
+  <footer>
     <app-status-bar></app-status-bar>
   </footer>
 </div>
