@@ -81,7 +81,13 @@
               ></button>
               <!-- Título do grupo (data) e total de registros -->
               <img src="/airbnb_lite.svg" alt="Airbnb" class="inline-block h-5 w-5" />
-              <span [pTooltip]="'Data do pagamento'" tooltipPosition="top" showDelay="200" hideDelay="0">{{ row['Data'] }}</span>
+              <span
+                [pTooltip]="'Data do pagamento'"
+                tooltipPosition="top"
+                showDelay="200"
+                hideDelay="0"
+                >{{ row['Data'] }}</span
+              >
               <!-- <span>Registros: {{ calculateDateTotal(row['Data']) }}</span> -->
               <span></span>
             </div>
@@ -122,9 +128,38 @@
             [style.width]="getColMaxWidth(col.field)"
             [ngClass]="tdClass(row, col.field)"
           >
+            @if (col.field === 'Hóspede') {
+            <a
+              [href]="reservationUrl(row['Código de Confirmação'])"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block truncate"
+              [style.maxWidth]="getColMaxWidth(col.field)"
+            >
+              <p-button
+                severity="secondary"
+                variant="text"
+                label="{{ row[col.field] }}"
+                [pTooltip]=""
+              ></p-button>
+            </a>
+
+            } @else if (col.field === 'Código de Confirmação') {
+            <a
+              [href]="reservationUrl(row['Código de Confirmação'])"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block truncate"
+              [style.maxWidth]="getColMaxWidth(col.field)"
+            >
+              <p-button severity="secondary" variant="text" label="{{ row[col.field] }}"></p-button>
+            </a>
+
+            } @else {
             <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
               row[col.field]
             }}</span>
+            }
           </td>
           }
         </tr>

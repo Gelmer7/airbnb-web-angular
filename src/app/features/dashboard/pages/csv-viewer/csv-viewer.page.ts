@@ -10,6 +10,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { TagModule } from 'primeng/tag';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Papa from 'papaparse';
 import { AirbnbRow } from '../../../../models/airbnb.model';
@@ -31,6 +32,7 @@ import { AppColors } from '../../../../shared/design/colors';
     InputIconModule,
     ButtonModule,
     RippleModule,
+    TagModule,
     HttpClientModule,
   ],
   templateUrl: './csv-viewer.page.html',
@@ -128,11 +130,11 @@ export class CsvViewerPage {
       'Taxa de serviço',
       'Taxa de limpeza',
       'Ganhos brutos',
-      'Hóspede',
+      // 'Hóspede',
       'Valor',
       'Informações',
     ];
-    const large = ['Tipo'];
+    const large = ['Tipo', 'Hóspede'];
 
     const min: Record<string, string> = { ...this.columnMinWidth() };
     const max: Record<string, string> = { ...this.columnMaxWidth() };
@@ -187,6 +189,11 @@ export class CsvViewerPage {
 
   public tdClass(row: AirbnbRow & { __id: number }, field: string): string {
     return field === 'Valor' ? this.colClass(field) : this.rowClass(row);
+  }
+
+  public reservationUrl(code?: string): string {
+    const c = (code ?? '').trim();
+    return c ? `https://www.airbnb.com.br/hosting/reservations/details/${encodeURIComponent(c)}` : '';
   }
 
   private applyCsvText(text: string): void {
