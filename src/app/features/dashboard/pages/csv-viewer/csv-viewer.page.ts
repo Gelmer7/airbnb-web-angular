@@ -11,6 +11,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TagModule } from 'primeng/tag';
+import { CheckboxModule } from 'primeng/checkbox';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Papa from 'papaparse';
 import { AirbnbRow } from '../../../../models/airbnb.model';
@@ -33,6 +34,7 @@ import { AppColors } from '../../../../shared/design/colors';
     ButtonModule,
     RippleModule,
     TagModule,
+    CheckboxModule,
     HttpClientModule,
   ],
   templateUrl: './csv-viewer.page.html',
@@ -48,15 +50,22 @@ export class CsvViewerPage {
   public readonly columnMinWidth = signal<Record<string, string>>({ Noites: '6rem' });
   public readonly columnMaxWidth = signal<Record<string, string>>({ Noites: '10rem' });
   protected readonly expandedRowGroups = signal<string[]>([]);
+  protected readonly hidePayout = signal<boolean>(true);
+  private readonly inicioFimField = 'Data Inicio-Fim';
+  private readonly inicioFimHeader = 'Inicio-Fim';
+  private readonly pessoaField = 'Pessoa';
+  private readonly pessoaHeader = 'Pessoa';
   private readonly preferredInitial = [
     'Data',
     'Tipo',
     'Código de Confirmação',
-    'Data de início',
-    'Data de término',
+    this.pessoaHeader,
+    this.inicioFimField, //coluna virtual
+    // 'Data de início',
+    // 'Data de término',
     'Noites',
     'Hóspede',
-    'Informações',
+    //'Informações',
     // 'Taxa de serviço',
     'Taxa de limpeza',
     'Valor',
@@ -83,7 +92,7 @@ export class CsvViewerPage {
   }
 
   protected calculateDateTotal(date: string): number {
-    const data = this.rows();
+    const data = this.visibleRows();
     let count = 0;
     for (let i = 0; i < data.length; i++) {
       if (data[i]['Data'] === date) count++;
@@ -106,6 +115,10 @@ export class CsvViewerPage {
 
   public groupClass(date: string): string {
     return this.groupIndex(date) % 2 === 0 ? 'bg-neutral-50' : 'bg-neutral-100';
+  }
+
+  public groupHeaderClass(date: string): string {
+    return this.groupClass(date) + ' !p-0';
   }
 
   public getColMinWidth(field: string): string {
@@ -133,8 +146,10 @@ export class CsvViewerPage {
       // 'Hóspede',
       'Valor',
       'Informações',
+      'Tipo',
+      this.inicioFimField,
     ];
-    const large = ['Tipo', 'Hóspede'];
+    const large = ['Hóspede'];
 
     const min: Record<string, string> = { ...this.columnMinWidth() };
     const max: Record<string, string> = { ...this.columnMaxWidth() };
@@ -184,16 +199,65 @@ export class CsvViewerPage {
   }
 
   public colHeaderClass(field: string): string {
-    return field === 'Valor' ? AppColors.pagamentos : '';
+    const base = field === 'Valor' ? AppColors.pagamentos : '';
+    return (base ? base + ' ' : '') + '!p-1';
   }
 
   public tdClass(row: AirbnbRow & { __id: number }, field: string): string {
-    return field === 'Valor' ? this.colClass(field) : this.rowClass(row);
+    const base = field === 'Valor' ? this.colClass(field) : this.rowClass(row);
+    return base + ' !p-1';
   }
 
   public reservationUrl(code?: string): string {
     const c = (code ?? '').trim();
     return c ? `https://www.airbnb.com.br/hosting/reservations/details/${encodeURIComponent(c)}` : '';
+  }
+
+  public colTooltip(row: AirbnbRow & { __id: number }, field: string): string {
+    if (this.isDerived(field)) {
+      if (this.isPessoa(field)) return this.personFromTipo(row['Tipo']);
+      const ini = row['Data de início'] ?? '';
+      const fim = row['Data de término'] ?? '';
+      return `${ini} - ${fim}`.trim();
+    }
+    const v = row[field as keyof AirbnbRow] as any;
+    return String(v ?? '');
+  }
+
+  public isDerived(field: string): boolean {
+    return field === this.inicioFimField || field === this.pessoaField;
+  }
+
+  public isPessoa(field: string): boolean {
+    return field === this.pessoaField;
+  }
+
+  public renderDerived(row: AirbnbRow & { __id: number }, field: string): string {
+    if (field === this.inicioFimField) {
+      const ini = row['Data de início'] ?? '';
+      const fim = row['Data de término'] ?? '';
+      return `${ini} - ${fim}`;
+    }
+    if (field === this.pessoaField) {
+      return this.personFromTipo(row['Tipo']);
+    }
+    return '';
+  }
+
+  private personFromTipo(tipo?: string): string {
+    const t = (tipo ?? '').trim();
+    if (t === 'Reserva') return 'Luiza';
+    if (t === 'Recebimento do coanfitrião') return 'Gelmer';
+    if (t === 'Pagamento da Resolução') return 'Luiza';
+    return '';
+  }
+
+
+  public visibleRows(): (AirbnbRow & { __id: number })[] {
+    const data = this.rows();
+    return this.hidePayout()
+      ? data.filter((r) => (r['Tipo'] ?? '').trim() !== 'Payout')
+      : data;
   }
 
   private applyCsvText(text: string): void {
@@ -206,12 +270,18 @@ export class CsvViewerPage {
     this.recomputeGroupIndexMap(this.rows());
     this.applyColumnSizes(fields);
     const mapped = fields.map((f: string) => ({ field: f, header: f }));
-    this.cols.set(mapped);
+    const derivedInicioFim = { field: this.inicioFimField, header: this.inicioFimHeader };
+    const derivedPessoa = { field: this.pessoaField, header: this.pessoaHeader };
+    const mappedWithDerived = [...mapped, derivedInicioFim, derivedPessoa];
+    this.cols.set(mappedWithDerived);
+    const colFields = new Set(mappedWithDerived.map((c) => c.field));
     const initialSelected = this.preferredInitial
-      .filter((n) => fields.includes(n))
+      .filter((n) => colFields.has(n))
       .map((n) => ({ field: n, header: n }));
     this.selectedColumns.set(
-      initialSelected.length ? initialSelected : mapped.slice(0, Math.min(8, mapped.length))
+      initialSelected.length
+        ? initialSelected
+        : mappedWithDerived.slice(0, Math.min(8, mappedWithDerived.length))
     );
   }
 }

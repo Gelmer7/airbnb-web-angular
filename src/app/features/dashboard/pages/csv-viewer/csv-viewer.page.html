@@ -19,7 +19,7 @@
     <p-table
       #dt
       [columns]="selectedColumns()"
-      [value]="rows()"
+      [value]="visibleRows()"
       [scrollable]="true"
       scrollHeight="flex"
       sortMode="single"
@@ -49,25 +49,33 @@
             />
           </p-iconfield>
 
-          <!-- Seletor de colunas visíveis -->
-          <p-multiselect
-            display="chip"
-            [options]="cols()"
-            [ngModel]="selectedColumns()"
-            (ngModelChange)="onColumnsChange($event)"
-            optionLabel="header"
-            selectedItemsLabel="{0} colunas selecionadas"
-            [style]="{ 'min-width': '200px' }"
-            placeholder="Escolher colunas"
-          ></p-multiselect>
+          <div class="flex items-center gap-2">
+            <!-- Seletor de colunas visíveis -->
+            <p-multiselect
+              display="chip"
+              [options]="cols()"
+              [ngModel]="selectedColumns()"
+              (ngModelChange)="onColumnsChange($event)"
+              optionLabel="header"
+              selectedItemsLabel="{0} colunas selecionadas"
+              [style]="{ 'min-width': '200px' }"
+              placeholder="Escolher colunas"
+            ></p-multiselect>
+            <span class="p-2">Payout</span>
+            <p-checkbox
+              [ngModel]="hidePayout()"
+              (ngModelChange)="hidePayout.set($event)"
+              binary="true"
+            ></p-checkbox>
+          </div>
         </div>
       </ng-template>
 
       <!-- Linha de cabeçalho do grupo (subheader) -->
       <ng-template pTemplate="groupheader" let-row let-expanded="expanded" let-rowIndex="rowIndex">
         <tr pRowGroupHeader [ngClass]="groupClass(row['Data'])">
-          <td [attr.colspan]="selectedColumns().length" [ngClass]="groupClass(row['Data'])">
-            <div class="flex items-center gap-2">
+          <td [attr.colspan]="selectedColumns().length" [ngClass]="groupHeaderClass(row['Data'])">
+            <div class="flex items-center gap-1 p-0">
               <!-- Botão para expandir/recolher grupo -->
               <button
                 type="button"
@@ -77,10 +85,11 @@
                 text
                 rounded
                 plain
+                class="!p-0 !min-h-0 h-5 w-5"
                 [icon]="isGroupExpanded(row['Data']) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
               ></button>
               <!-- Título do grupo (data) e total de registros -->
-              <img src="/airbnb_lite.svg" alt="Airbnb" class="inline-block h-5 w-5" />
+              <img src="/airbnb_lite.svg" alt="Airbnb" class="inline-block h-4 w-4" />
               <span
                 [pTooltip]="'Data do pagamento'"
                 tooltipPosition="top"
@@ -120,7 +129,7 @@
         <tr>
           @for (col of columns; track col.field) {
           <td
-            [pTooltip]="row[col.field]"
+            [pTooltip]="colTooltip(row, col.field)"
             tooltipPosition="top"
             [showDelay]="200"
             [hideDelay]="0"
@@ -135,26 +144,22 @@
               rel="noopener noreferrer"
               class="block truncate"
               [style.maxWidth]="getColMaxWidth(col.field)"
-            >
-              <p-button
-                severity="secondary"
-                variant="text"
-                label="{{ row[col.field] }}"
-                [pTooltip]=""
-              ></p-button>
+              >{{ row[col.field] }}
             </a>
 
-            } @else if (col.field === 'Código de Confirmação') {
-            <a
-              [href]="reservationUrl(row['Código de Confirmação'])"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block truncate"
-              [style.maxWidth]="getColMaxWidth(col.field)"
-            >
-              <p-button severity="secondary" variant="text" label="{{ row[col.field] }}"></p-button>
-            </a>
-
+            } @else if (col.field === 'Tipo') {
+            <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
+              row['Tipo']
+            }}</span>
+            } @else if (isDerived(col.field)) {
+            @if (isPessoa(col.field)) {
+              <i class="pi pi-user mr-2"></i>
+              <span >{{ renderDerived(row, col.field) }}</span>
+            } @else {
+              <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
+                renderDerived(row, col.field)
+              }}</span>
+            }
             } @else {
             <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
               row[col.field]
