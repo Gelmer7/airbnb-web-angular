@@ -15,6 +15,20 @@
     <div class="p-2">
       <app-expense-form [(visible)]="showExpenseForm" (save)="onSaveExpense($event)">
       </app-expense-form>
+
+      <div class="mt-4">
+        <h3>Lista de Gastos</h3>
+        <div *ngIf="expenses.length === 0">Nenhum gasto cadastrado.</div>
+        <ul *ngIf="expenses.length > 0" class="list-none p-0">
+          <li
+            *ngFor="let expense of expenses"
+            class="p-2 border-bottom-1 surface-border flex justify-content-between"
+          >
+            <span>{{ expense.description }}</span>
+            <span class="font-bold">{{ expense.amount | currency }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </p-card>
 </div>

@@ -33,4 +33,21 @@ export class SupabaseService {
   async getProperties() {
     return await this.supabase.from('properties').select('*');
   }
+
+  async getExpenses() {
+    return await this.supabase.from('expenses').select('*').order('date', { ascending: false });
+  }
+
+  async addExpense(expense: Omit<Expense, 'id' | 'created_at'>) {
+    return await this.supabase.from('expenses').insert(expense).select();
+  }
+}
+
+export interface Expense {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  category: string;
+  created_at: string;
 }
