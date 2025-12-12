@@ -9,6 +9,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuItem } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar-menu',
@@ -23,6 +24,7 @@ import { MenuItem } from 'primeng/api';
     AvatarModule,
     ButtonModule,
     TooltipModule,
+    TranslateModule,
   ],
   templateUrl: './sidebar-menu.component.html',
 })

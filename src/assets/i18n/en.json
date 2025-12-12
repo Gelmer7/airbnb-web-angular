@@ -1,0 +1,31 @@
+{
+  "TOOLBAR": {
+    "LOGIN": "Login",
+    "LANGUAGE": "Language",
+    "SELECT_LANGUAGE": "Select Language"
+  },
+  "LANGUAGES": {
+    "ES": "Spanish",
+    "EN": "English",
+    "PT": "Portuguese"
+  },
+  "MENU": {
+    "HEADER": "Menu"
+  },
+  "ACTIONS": {
+    "UPLOAD_CSV": "CSV Upload",
+    "VIEW_CSV": "CSV Viewer"
+  },
+  "TERMS": {
+    "ENTRIES": "Entries",
+    "CSV_LIST": "CSV List",
+    "EXPENSES": "Expenses",
+    "EARNINGS": "Earnings",
+    "CARNE_LEAO": "Carnê-Leão",
+    "TITHE": "Tithe",
+    "CONTRACTS": "Contracts",
+    "CHARTS": "Charts",
+    "REPORTS": "Reports",
+    "SUGGESTIONS": "Suggestions"
+  }
+}

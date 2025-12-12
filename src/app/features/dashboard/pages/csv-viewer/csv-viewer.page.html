@@ -4,7 +4,7 @@
   <ng-template pTemplate="header">
     <div class="flex items-center gap-2">
       <i class="pi pi-table"></i>
-      <span>Visualizador de CSV</span>
+      <span>{{ 'ACTIONS.VIEW_CSV' | translate }}</span>
     </div>
   </ng-template>
 
@@ -113,7 +113,9 @@
             [style.width]="getColMaxWidth(col.field)"
             [ngClass]="colHeaderClass(col.field)"
           >
-            <span [pTooltip]="col.headerFull" tooltipPosition="top" showDelay="200" hideDelay="0">{{ col.headerAbbr }}</span>
+            <span [pTooltip]="col.headerFull" tooltipPosition="top" showDelay="200" hideDelay="0">{{
+              col.headerAbbr
+            }}</span>
             <!-- Ícone de ordenação -->
             <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
@@ -150,16 +152,14 @@
             <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
               getCellValue(row, col.field)
             }}</span>
-            } @else if (isDerived(col.field)) {
-            @if (isPessoa(col.field)) {
-              <i class="pi pi-user mr-2"></i>
-              <span >{{ renderDerived(row, col.field) }}</span>
+            } @else if (isDerived(col.field)) { @if (isPessoa(col.field)) {
+            <i class="pi pi-user mr-2"></i>
+            <span>{{ renderDerived(row, col.field) }}</span>
             } @else {
-              <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
-                renderDerived(row, col.field)
-              }}</span>
-            }
-            } @else {
+            <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
+              renderDerived(row, col.field)
+            }}</span>
+            } } @else {
             <span class="block truncate" [style.maxWidth]="getColMaxWidth(col.field)">{{
               getCellValue(row, col.field)
             }}</span>

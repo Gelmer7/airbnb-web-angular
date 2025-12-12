@@ -8,7 +8,7 @@
     <!-- Cabeçalho menu -->
     <ng-template #start>
       <div class="flex items-center justify-between w-full p-2" aria-label="Cabeçalho do menu">
-        <span *ngIf="!collapsed">Menu</span>
+        <span *ngIf="!collapsed">{{ 'MENU.HEADER' | translate }}</span>
         <p-button
           [icon]="collapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-left'"
           variant="text"
@@ -20,7 +20,7 @@
 
     <ng-template #submenuheader let-item>
       @if (!collapsed) {
-      <span>{{ item.label }}</span>
+      <span>{{ item.label | translate }}</span>
       }
     </ng-template>
 
@@ -31,13 +31,13 @@
         [routerLink]="item.routerLink"
         class="flex items-center p-menu-item-link"
         [ngClass]="collapsed ? 'justify-center px-2' : 'px-2'"
-        [pTooltip]="item.label"
+        [pTooltip]="item.label | translate"
         [tooltipDisabled]="!collapsed"
         tooltipPosition="top"
-        [attr.aria-label]="collapsed ? item.label : null"
+        [attr.aria-label]="collapsed ? (item.label | translate) : null"
       >
         <span [class]="item.icon" aria-hidden="true"></span>
-        <span class="ml-2" *ngIf="!collapsed">{{ item.label }}</span>
+        <span class="ml-2" *ngIf="!collapsed">{{ item.label | translate }}</span>
         @if (item.badge && !collapsed) {
         <p-badge class="ml-auto" [value]="item.badge" />
         } @if (item.shortcut && !collapsed) {

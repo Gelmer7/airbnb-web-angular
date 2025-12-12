@@ -4,12 +4,13 @@ import { CardModule } from 'primeng/card';
 import { ExpenseFormComponent } from '../../components/expense-form/expense-form.component';
 import { ButtonModule } from 'primeng/button';
 import { SupabaseService } from '../../../../services/supabase.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-expenses-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, CardModule, ExpenseFormComponent, ButtonModule],
+  imports: [CommonModule, CardModule, ExpenseFormComponent, ButtonModule, TranslateModule],
   templateUrl: './expenses.page.html',
 })
 export class ExpensesPage implements OnInit {

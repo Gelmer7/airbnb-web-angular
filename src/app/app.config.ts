@@ -1,6 +1,15 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+// DropdownModule removed line was not here, it was http-loader
+
+import { importProvidersFrom } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -14,10 +23,36 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(),
-        providePrimeNG({
-            theme: {
-                preset: material
-            }
-        })
-  ]
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient],
+        },
+      })
+    ),
+    providePrimeNG({
+      theme: {
+        preset: material,
+      },
+    }),
+  ],
 };
+
+// Custom Loader para evitar problemas de compatibilidad com versões recentes e assinaturas de construtor
+export class CustomTranslateLoader implements TranslateLoader {
+  constructor(
+    private http: HttpClient,
+    private prefix: string = './i18n/',
+    private suffix: string = '.json'
+  ) {}
+
+  getTranslation(lang: string): Observable<any> {
+    return this.http.get(`${this.prefix}${lang}${this.suffix}`);
+  }
+}
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new CustomTranslateLoader(http);
+}

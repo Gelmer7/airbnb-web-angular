@@ -15,8 +15,17 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import Papa from 'papaparse';
 import { AirbnbNormalizedRow, normalizeAirbnbRow } from '../../../../models/airbnb.model';
-import { ViewerRow, getCellValue as gv, renderDerived as rd, isDerived as idv, isPessoa as ip, colTooltip as ct, tipoHighlight as th } from './csv-viewer.helpers';
+import {
+  ViewerRow,
+  getCellValue as gv,
+  renderDerived as rd,
+  isDerived as idv,
+  isPessoa as ip,
+  colTooltip as ct,
+  tipoHighlight as th,
+} from './csv-viewer.helpers';
 import { AppColors } from '../../../../shared/design/colors';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-csv-viewer-page',
@@ -37,6 +46,7 @@ import { AppColors } from '../../../../shared/design/colors';
     TagModule,
     CheckboxModule,
     HttpClientModule,
+    TranslateModule,
   ],
   templateUrl: './csv-viewer.page.html',
 })
@@ -45,7 +55,9 @@ export class CsvViewerPage {
   protected readonly headers = signal<string[]>([]);
   protected readonly rows = signal<ViewerRow[]>([]);
   protected readonly cols = signal<{ field: string; headerFull: string; headerAbbr: string }[]>([]);
-  protected readonly selectedColumns = signal<{ field: string; headerFull: string; headerAbbr: string }[]>([]);
+  protected readonly selectedColumns = signal<
+    { field: string; headerFull: string; headerAbbr: string }[]
+  >([]);
   protected globalQuery = '';
   public readonly groupIndexMap = signal<Record<string, number>>({});
   public readonly columnMinWidth = signal<Record<string, string>>({ Noites: '6rem' });
@@ -81,7 +93,9 @@ export class CsvViewerPage {
       next: (text) => this.applyCsvText(text),
       error: () => {
         const fallback = '/assets/airbnb_12_2024-11_2025.csv';
-        this.http.get(fallback, { responseType: 'text' }).subscribe((text) => this.applyCsvText(text));
+        this.http
+          .get(fallback, { responseType: 'text' })
+          .subscribe((text) => this.applyCsvText(text));
       },
     });
   }
@@ -182,7 +196,9 @@ export class CsvViewerPage {
     this.expandedRowGroups.set(next);
   }
 
-  public tipoHighlight(row: ViewerRow): string | undefined { return th(row); }
+  public tipoHighlight(row: ViewerRow): string | undefined {
+    return th(row);
+  }
 
   public rowClass(row: ViewerRow): string {
     const base = this.groupClass(row.__norm.data);
@@ -206,27 +222,34 @@ export class CsvViewerPage {
 
   public reservationUrl(code?: string): string {
     const c = (code ?? '').trim();
-    return c ? `https://www.airbnb.com.br/hosting/reservations/details/${encodeURIComponent(c)}` : '';
+    return c
+      ? `https://www.airbnb.com.br/hosting/reservations/details/${encodeURIComponent(c)}`
+      : '';
   }
 
-  public colTooltip(row: ViewerRow, field: string): string { return ct(row, field, this.inicioFimField, this.pessoaField); }
+  public colTooltip(row: ViewerRow, field: string): string {
+    return ct(row, field, this.inicioFimField, this.pessoaField);
+  }
 
-  public isDerived(field: string): boolean { return idv(field, this.inicioFimField, this.pessoaField); }
+  public isDerived(field: string): boolean {
+    return idv(field, this.inicioFimField, this.pessoaField);
+  }
 
-  public isPessoa(field: string): boolean { return ip(field, this.pessoaField); }
+  public isPessoa(field: string): boolean {
+    return ip(field, this.pessoaField);
+  }
 
-  public renderDerived(row: ViewerRow, field: string): string { return rd(row, field, this.inicioFimField, this.pessoaField); }
+  public renderDerived(row: ViewerRow, field: string): string {
+    return rd(row, field, this.inicioFimField, this.pessoaField);
+  }
 
-  public getCellValue(row: ViewerRow, field: string): string { return this.isDerived(field) ? this.renderDerived(row, field) : gv(row, field); }
-
-  
-
+  public getCellValue(row: ViewerRow, field: string): string {
+    return this.isDerived(field) ? this.renderDerived(row, field) : gv(row, field);
+  }
 
   public visibleRows(): ViewerRow[] {
     const data = this.rows();
-    return this.hidePayout()
-      ? data.filter((r) => (r.__norm.tipo ?? '').trim() !== 'Payout')
-      : data;
+    return this.hidePayout() ? data.filter((r) => (r.__norm.tipo ?? '').trim() !== 'Payout') : data;
   }
 
   private applyCsvText(text: string): void {
@@ -244,8 +267,16 @@ export class CsvViewerPage {
     this.recomputeGroupIndexMap(enriched);
     this.applyColumnSizes(fields);
     const mapped = fields.map((f: string) => ({ field: f, headerFull: f, headerAbbr: f }));
-    const derivedInicioFim = { field: this.inicioFimField, headerFull: this.inicioFimHeader, headerAbbr: this.inicioFimHeader };
-    const derivedPessoa = { field: this.pessoaField, headerFull: this.pessoaHeader, headerAbbr: this.pessoaHeader };
+    const derivedInicioFim = {
+      field: this.inicioFimField,
+      headerFull: this.inicioFimHeader,
+      headerAbbr: this.inicioFimHeader,
+    };
+    const derivedPessoa = {
+      field: this.pessoaField,
+      headerFull: this.pessoaHeader,
+      headerAbbr: this.pessoaHeader,
+    };
     const mappedWithDerived = [...mapped, derivedInicioFim, derivedPessoa];
     this.cols.set(mappedWithDerived);
     const colFields = new Set(mappedWithDerived.map((c) => c.field));
