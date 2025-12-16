@@ -2,7 +2,13 @@
   "TOOLBAR": {
     "LOGIN": "Iniciar Sesión",
     "LANGUAGE": "Idioma",
-    "SELECT_LANGUAGE": "Seleccionar Idioma"
+    "SELECT_LANGUAGE": "Seleccionar Idioma",
+    "LOGOUT": "Cerrar Sesión"
+  },
+  "THEME": {
+    "LIGHT": "Modo Claro",
+    "DARK": "Modo Oscuro",
+    "SELECT_THEME": "Seleccionar Tema"
   },
   "LANGUAGES": {
     "ES": "Español",

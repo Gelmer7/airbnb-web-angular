@@ -28,7 +28,7 @@ export class LanguageService {
     const savedLang = localStorage.getItem('app-lang');
     const browserLang = this.translate.getBrowserLang();
     const defaultLang =
-      savedLang || (browserLang && browserLang.match(/es|en|pt/) ? browserLang : 'pt');
+      savedLang || (browserLang && browserLang.match(/pt|es|en/) ? browserLang : 'pt');
 
     this.setLanguage(defaultLang);
   }
